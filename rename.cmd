@@ -2,10 +2,14 @@
 rem Renames this template to your own project.
 rem   - renames the solution file to <name>.slnx
 rem   - sets author and description in fxmanifest.lua
+rem   - links the dist folder into the server's resources folder as <name>
 rem Usage: rename.cmd            (asks for the values)
 rem        rename.cmd my-resource "Author" "Description"
 setlocal
 cd /d "%~dp0"
+
+rem Server resources folder the project gets linked into.
+if not defined ResourcesDir set "ResourcesDir=D:\VijfM Enhanced\EAServer\txData\FiveMBasicServerCFXDefault_5F9ED8.base\resources\[scripts]"
 
 set "ProjName=%~1"
 set "Proj_author=%~2"
@@ -48,5 +52,29 @@ if errorlevel 1 (
 
 echo.
 echo Done. Solution is now %ProjName%.slnx
-echo Name the resource folder on your server "%ProjName%" as well.
+
+rem Link the built resource (dist) into the server's resources folder
+if not exist "%ResourcesDir%\" goto :nolink
+if exist "%ResourcesDir%\%ProjName%" goto :linkexists
+if not exist dist mkdir dist
+mklink /J "%ResourcesDir%\%ProjName%" "%~dp0dist" >nul
+if errorlevel 1 goto :linkfailed
+echo Linked "%ResourcesDir%\%ProjName%" to "%~dp0dist"
+echo Run build.cmd, then add "ensure %ProjName%" to server.cfg.
+goto :end
+
+:nolink
+echo Server resources folder not found, no link created:
+echo   %ResourcesDir%
+echo Name the resource folder on your server "%ProjName%".
+goto :end
+
+:linkexists
+echo "%ResourcesDir%\%ProjName%" already exists, no link created.
+goto :end
+
+:linkfailed
+echo Could not create the link in "%ResourcesDir%".
+
+:end
 if "%~1"=="" pause
