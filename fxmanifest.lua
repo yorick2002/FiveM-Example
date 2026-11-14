@@ -3,7 +3,7 @@ fx_version 'cerulean'
 game { 'gta5enhanced' }
 
 author 'Yorick'
-description 'FiveM C# templatwe'
+description 'FiveM C# template'
 version '1.0.0'
 
 client_script 'Client/bin/Release/net10.0/publish/Client*.dll'
