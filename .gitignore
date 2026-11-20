@@ -8,3 +8,7 @@ dist/
 .idea/
 *.user
 *.suo
+
+# Web
+node_modules/
+Web/build/
